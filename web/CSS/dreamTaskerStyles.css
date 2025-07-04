@@ -1,0 +1,94 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
+*/
+/* 
+    Created on : Feb 27, 2025, 5:44:07 PM
+    Author     : turtl
+*/
+
+/* dreamTaskerStyles.css */
+
+/* Gradient Backgrounds */
+.bg-gradient {
+    background: linear-gradient(to bottom right, #d8b4f8, #f3e8ff);
+}
+
+/* Card Styling */
+.card {
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+/* Typography */
+.text-primary {
+    color: #6f42c1 !important;
+}
+
+.fw-bold {
+    font-weight: 700 !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #6f42c1;
+    border-color: #6f42c1;
+}
+
+.btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+/* Rounded Inputs */
+.form-control.rounded-pill {
+    border-radius: 50rem;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #fff;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.nav-link {
+    color: #6c757d;
+}
+
+.nav-link.active, .nav-link:hover {
+    color: #6f42c1;
+}
+
+/* Tables */
+.table {
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.table thead {
+    background-color: #f8f9fa;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Form Labels */
+.form-label {
+    font-weight: 500;
+}
+
+/* Miscellaneous */
+.shadow-lg {
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(0, 0, 0, 0.075) !important;
+}
+
