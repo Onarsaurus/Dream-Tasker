@@ -1,6 +1,6 @@
 Welcome to the Dream Tasker. 
 
-Origin: This was a personal idea for practice, then a school project, and back to personal project. 
+Origin: This was a personal idea for practice, then a school project, and now a personal project. 
 
 The Goal: The goal with this project is for it to become a swiss army knife of sorts in the realm of task managment. With a calendar for organizing events (using calendar.js), lists for marking down task and goals, budgeting/
 financial support with the inclusion of charts (most likely using chart.js), and as much more as can be crammed in. 
