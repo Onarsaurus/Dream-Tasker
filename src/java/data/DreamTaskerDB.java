@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import javax.naming.NamingException;
@@ -98,6 +99,7 @@ public class DreamTaskerDB {
         return rows;
     }
 
+    //Inserts a list into the database
     public static int insertList(ToDoList list, User user) throws NamingException, SQLException {
         ConnectionPool pool = ConnectionPool.getInstance();
         Connection connection = pool.getConnection();
@@ -139,33 +141,61 @@ public class DreamTaskerDB {
 
     }
 
-//    public static User getList(ToDoList list, User user) throws NamingException, SQLException {
-//        ConnectionPool pool = ConnectionPool.getInstance();
-//        Connection connection = pool.getConnection();
-//        PreparedStatement ps = null;
-//        ResultSet rs = null;
-//
-//        String query = "SELECT * FROM users "
-//                + "WHERE username = ?";
-//
-//        ps = connection.prepareStatement(query);
-//        ps.setString(1, user.getUsername());
-//        rs = ps.executeQuery();
-//
-//        if (rs.next()) {
-//            ToDoList list = new ToDoList();
-//            user.setUsername(rs.getString("username"));
-//            user.setPassword(rs.getString("password"));
-//            user.setBirthday(rs.getDate("birthday").toLocalDate());
-//            ps.close();
-//            pool.freeConnection(connection);
-//            return user;
-//        } else {
-//            ps.close();
-//            pool.freeConnection(connection);
-//            return null;
-//        }
-//    }
+    //this gets a single list from an individual
+    //this should work but not tested yet
+    public static ToDoList getList(User user, String name) throws NamingException, SQLException {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        PreparedStatement ps2 = null;
+        ResultSet rs = null;
+        ResultSet rs2 = null;
+        int user_id = 1;
+
+        //this query gets the user_id from the database
+        String query1
+                = "SELECT user_id FROM users "
+                + "WHERE username = ?";
+
+        //the query is executed and the user_id is stored in a variable
+        ps = connection.prepareStatement(query1);
+        ps.setString(1, user.getUsername());
+        rs = ps.executeQuery();
+
+        while (rs.next()) {
+            user_id = rs.getInt("user_id");
+        }
+
+        ps.close();
+        rs.close();
+
+        //this query gets the list
+        String query2
+                = "SELECT * FROM to_do_lists "
+                + "WHERE user_id = ? AND name = ?";
+        ps2 = connection.prepareStatement(query2);
+        ps2.setInt(1, user_id);
+        ps2.setString(2, name);
+        rs2 = ps2.executeQuery();
+
+        if (rs2.next()) {
+            ToDoList list = new ToDoList();
+            list.setListID(rs2.getInt("list_id"));
+            list.setName(rs2.getString("name"));
+            LocalDate completedAt = rs2.getDate("completed_at") == null ? null : rs2.getDate("completed_at").toLocalDate();
+            list.setCompletedAt(completedAt);
+            ps2.close();
+            rs2.close();
+            pool.freeConnection(connection);
+            return list;
+        } else {
+            ps2.close();
+            rs2.close();
+            pool.freeConnection(connection);
+            return null;
+        }
+    }
+
 //    public static int updateList(ToDoList list, User user) throws NamingException, SQLException {
 //        ConnectionPool pool = ConnectionPool.getInstance();
 //        Connection connection = pool.getConnection();
@@ -190,6 +220,8 @@ public class DreamTaskerDB {
 //        return rows;
 //
 //    }
+    
+    //Returns all of the users lists
     public static ArrayList<ToDoList> getUsersCompleteLists(User user) throws NamingException, SQLException {
         ConnectionPool pool = ConnectionPool.getInstance();
         Connection connection = pool.getConnection();
@@ -244,6 +276,7 @@ public class DreamTaskerDB {
 
     }
 
+    //Inserts an item into a list
     public static int insertItem(ToDoItem item, ToDoList list, User user) throws NamingException, SQLException {
         ConnectionPool pool = ConnectionPool.getInstance();
         Connection connection = pool.getConnection();
@@ -305,30 +338,31 @@ public class DreamTaskerDB {
 
     }
 
-//    public static int updateItem(ToDoList list, User user) throws NamingException, SQLException {
-//        ConnectionPool pool = ConnectionPool.getInstance();
-//        Connection connection = pool.getConnection();
-//        PreparedStatement ps = null;
-//        PreparedStatement ps2 = null;
-//        int user_id = 1;
-//
-//        String query
-//                = "SELECT user_id FROM users "
-//                + "WHERE username = ?";
-//        String query2
-//                = "INSERT INTO to_do_lists (user_id, name) "
-//                + "VALUES (?, ?)";
-//
-//        ps2 = connection.prepareStatement(query2);
-//        ps2.setInt(1, user_id);
-//        ps2.setString(2, list.getName());
-//
-//        int rows = ps2.executeUpdate();
-//        ps2.close();
-//        pool.freeConnection(connection);
-//        return rows;
-//
-//    }
+    //updates an item, such as marking complete
+    public static int updateItem(ToDoList list, String itemName, String itemDescription, Boolean complete) throws NamingException, SQLException {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+
+        String query 
+                = "UPDATE list_items "
+                + "SET name = ?, description = ?, complete = ? "
+                + "WHERE list_id = ? AND name = ?";
+
+        ps = connection.prepareStatement(query);
+        ps.setString(1, itemName);
+        ps.setString(2, itemDescription);
+        ps.setBoolean(3, complete);
+        ps.setInt(4, list.getListID());
+        ps.setString(5, itemName);
+
+        int rows = ps.executeUpdate();
+        ps.close();
+        pool.freeConnection(connection);
+        return rows;
+    }
+
+    //Gets the items in a list
     public static ArrayList<ToDoItem> getListsItems(ToDoList list) throws NamingException, SQLException {
         ConnectionPool pool = ConnectionPool.getInstance();
         Connection connection = pool.getConnection();
@@ -428,6 +462,11 @@ public class DreamTaskerDB {
                 query = "SELECT * FROM to_do_list "
                         + "WHERE name = ?";
                 break;
+            case "itemname": {
+                query = "SELECT * FROM list_items "
+                        + "WHERE name = ?";
+                break;
+            }
             default:
                 return false;
         }

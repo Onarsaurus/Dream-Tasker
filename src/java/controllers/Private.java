@@ -36,7 +36,6 @@ import org.apache.catalina.realm.SecretKeyCredentialHandler;
  *
  * @author turtl
  */
-
 public class Private extends HttpServlet {
 
     /**
@@ -233,8 +232,68 @@ public class Private extends HttpServlet {
                 break;
             }
             case "editlist": {
-
+                LinkedHashMap<String, String> errors = new LinkedHashMap();
+                //THIS IS THE CURRENT GOAL. MAKE IT SEAMLESS TO EDIT LIST AND MARK AS COMPLETE OR NOT AND DELETE ITEMS AND LIST. SHOULD BE EASY TO DO.
+                url = "/lists.jsp";
                 break;
+            }
+            case "deletelist": {
+
+            }
+            case "edititem": {
+
+            }
+            case "completeitem": {
+                LinkedHashMap<String, String> errors = new LinkedHashMap();
+                
+                //gets the parameters
+                boolean complete = request.getParameter("yesno").equals("yes");
+                String listName = request.getParameter("listName");
+                String itemName = request.getParameter("itemName");
+                String itemDescription = request.getParameter("itemDescription");
+                
+                ToDoList list = null;
+                try {
+                    //get the list the item belongs to by using list name and stored user:
+                    list = DreamTaskerDB.getList(storedUser, listName);
+                    try {
+                        DreamTaskerDB.updateItem(list, itemName, itemDescription, complete);
+                        if (complete) {
+                            //maybe remove item from the list? (visually/archived)
+                        } else {
+                            
+                        }
+                    } catch (NamingException ex) {
+                        Logger.getLogger(Private.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Private.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } catch (NamingException ex) {
+                    Logger.getLogger(Private.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Private.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                //Attemps to retreive all list from the user to display on list.jsp when redirected
+                ArrayList<ToDoList> lists = null;
+                try {
+                    lists = DreamTaskerDB.getUsersCompleteLists(storedUser);
+
+                } catch (NamingException ex) {
+                    Logger.getLogger(Private.class.getName()).log(Level.SEVERE, null, ex);
+                    errors.put("general", "There was an sql problem in the database");
+                } catch (SQLException ex) {
+                    Logger.getLogger(Private.class.getName()).log(Level.SEVERE, null, ex);
+                    errors.put("general", "There was an sql problem in the database");
+                }
+
+                request.setAttribute("lists", lists);
+                request.setAttribute("errors", errors);
+                url = "/lists.jsp";
+                break;
+            }
+            case "deleteitem": {
+
             }
             case "editprofile": {
                 LinkedHashMap<String, String> errors = new LinkedHashMap();
@@ -249,14 +308,14 @@ public class Private extends HttpServlet {
                         errors.put("email", "This email is already taken.");
                         url = "/profile.jsp";
                     } else {
-                        storedUser.setUsername(email);
+                        storedUser.setEmail(email);
                     }
                 } catch (NamingException | SQLException ex) {
                     errors.put("general", "There was a problem with the database");
                     request.setAttribute("errors", errors);
                     url = "/profile.jsp";
                 }
-                
+
                 //checks username
                 String username = request.getParameter("username");
                 if (!Validation.isUsernameValid(username).equals("")) {
@@ -296,7 +355,7 @@ public class Private extends HttpServlet {
                 }
 
                 //checks birthday
-                LocalDate birthday = null; 
+                LocalDate birthday = null;
                 try {
                     birthday = LocalDate.parse(request.getParameter("birthdate"));
                 } catch (DateTimeParseException | NullPointerException ex) {
@@ -324,6 +383,8 @@ public class Private extends HttpServlet {
                         url = "/profile.jsp";
                     }
                 }
+                
+                request.setAttribute("errors", errors);
                 break;
             }
             case "logout": {

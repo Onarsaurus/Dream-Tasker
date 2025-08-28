@@ -45,11 +45,14 @@ public class Public extends HttpServlet {
             throws ServletException, IOException {
 
         String url = "/index.jsp";
+        
         String action = request.getParameter("action");
+        
         if (action == null) {
             action = "default";
         }
 
+        //switch changes logic depending on the received parameter
         switch (action) {
             case "login": {
                 HashMap<String, String> errors = new HashMap();

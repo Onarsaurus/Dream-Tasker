@@ -12,37 +12,33 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>To Do Lists</title>
-        <script type="text/javascript" src="jquery-3.3.1.js"></script>
-        <script src="dreamTaskerLists.js"></script>
-        <!-- bootstrap -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="CSS/dreamTaskerStyles.css" rel="stylesheet">
     </head>
-    <body class="bg-gradient" style="background: linear-gradient(to bottom right, #f3e8ff, #e0bbff); min-height: 100vh;">
+    <body>
 
         <!-- Header/Nav -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light rounded-bottom shadow-sm">
-            <div class="container-fluid">
-                <span class="navbar-brand fw-bold text-primary">Dream Tasker</span>
-                <div class="collapse navbar-collapse">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link" href="Private?action=gotohome">Home</a></li>
-                        <li class="nav-item"><a class="nav-link active" href="Private?action=gotolists">Lists</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Budgeting</a></li>
-                        <li class="nav-item"><a class="nav-link" href="Private?action=gotoprofile">Profile</a></li>
-                        <li class="nav-item"><a class="nav-link text-danger" href="Public?action=gotologin">Logout</a></li>
+        <nav>
+            <div>
+                <span>Dream Tasker</span>
+                <div>
+                    <ul>
+                        <li><a href="Private?action=gotohome">Home</a></li>
+                        <li><a href="Private?action=gotolists">Lists</a></li>
+                        <li><a href="#">Budgeting</a></li>
+                        <li><a href="Private?action=gotoprofile">Profile</a></li>
+                        <li><a href="Public?action=gotologin">Logout</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
 
         <!-- Main Content -->
-        <main class="container my-5">
-            <h2 class="text-center text-primary mb-4">Your To-Do Lists</h2>
+        <main>
+            <h2>Your To-Do Lists</h2>
 
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover bg-white rounded shadow-sm">
-                    <thead class="table-light">
+            <div>
+                <table>
+                    <thead>
                         <tr>
                             <th>List Name</th>
                             <th>Items</th>
@@ -52,14 +48,14 @@
                     <tbody>
                         <c:forEach items="${lists}" var="list">
                             <tr>
-                                <td class="fw-bold">${list.name}</td>
+                                <td>${list.name}</td>
                                 <td>
-                                    <table class="table table-sm table-striped mb-0">
-                                        <thead class="table-secondary">
+                                    <table>
+                                        <thead>
                                             <tr>
                                                 <th>Item Name</th>
                                                 <th>Description</th>
-                                                <th>Complete</th>
+                                                <th>Complete?</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -68,9 +64,18 @@
                                                     <td>${item.name}</td>
                                                     <td>${item.description}</td>
                                                     <td>
-                                                        <span class="badge bg-${item.complete ? 'success' : 'secondary'}">
-                                                            ${item.complete ? 'Yes' : 'No'}
-                                                        </span>
+                                                        <form action="Private" method="post">
+                                                           <input type="hidden" name="action" value="completeitem">
+                                                           <input type="hidden" name="listName" value="${list.name}">
+                                                           <input type="hidden" name="itemName" value="${item.name}">
+                                                           <input type="hidden" name="itemDescription" value="${item.description}">
+                                                           <button type="submit" id="yes" name="yesno" value="yes"> 
+                                                                Yes
+                                                           </button>
+                                                           <button type="submit" id="no" name="yesno" value="no">
+                                                                No
+                                                           </button>
+                                                        </form>
                                                     </td>
                                                 </tr>
                                             </c:forEach>
@@ -85,15 +90,17 @@
             </div>
 
             <!-- Create List Button -->
-            <div class="text-center mt-4">
+            <div>
                 <form action="Private" method="get">
                     <input type="hidden" name="action" value="gotolistcreate">
-                    <button type="submit" class="btn btn-primary rounded-pill px-4">+ Create New List</button>
+                    <button type="submit">+ Create New List</button>
                 </form>
                 <c:if test="${errors.get('general') != null}">
-                    <div class="mt-3 text-danger">${errors.get("general")}</div>
+                    <div>${errors.get("general")}</div>
                 </c:if>
             </div>
         </main>
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+        <script src="Scripts/dreamTaskerLists.js"></script>
     </body>
 </html>
