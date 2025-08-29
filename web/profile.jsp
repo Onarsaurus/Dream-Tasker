@@ -66,6 +66,7 @@
                         <span>${errors.get("errors")}</span>
                         <span>${errors.get("username")}</span>
                         <span>${errors.get("email")}</span>
+                        <span>${errors.get("birthdate")}</span>
                         <span>${errors.get("general")}</span>
                     </div>
                 </form>

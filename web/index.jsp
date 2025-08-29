@@ -53,6 +53,8 @@
                         <input type="hidden" name="action" value="gotoregistration">
                         <button type="submit">Create an Account</button>
                     </form>
+                    <span>${errors.get("Hash") == null ? "" : errors.get("Hash")}</span>
+                    <span>${errors.get("Error") == null ? "" : errors.get("Error")}</span>
                 </div>
             </div>
         </div>

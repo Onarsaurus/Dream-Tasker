@@ -69,6 +69,9 @@
                         <input type="hidden" name="action" value="gotologin">
                         <button type="submit">Back to Login</button>
                     </form>
+                    
+                    <span>${errors.get("general") == null ? "" : errors.get("general")}</span>
+                    <span>${errors.get("hash") == null ? "" : errors.get("hash")}</span>
                 </div>
             </div>
         </div>

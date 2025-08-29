@@ -64,6 +64,7 @@
                     </table>
                 </div>
             </div>
+            <span>${errors("general")}</span>
 
             <!-- Calendar -->
             <div id="calendar"></div>

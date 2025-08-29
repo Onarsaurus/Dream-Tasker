@@ -43,16 +43,15 @@ public class Public extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        String url = "/index.jsp";
         
+        //The action parameter will determine what needs to be executed
         String action = request.getParameter("action");
+        String url = "/index.jsp";
         
         if (action == null) {
             action = "default";
         }
 
-        //switch changes logic depending on the received parameter
         switch (action) {
             case "login": {
                 HashMap<String, String> errors = new HashMap();
@@ -84,6 +83,7 @@ public class Public extends HttpServlet {
                 } catch (Exception ex) {
                     errors.put("Hash", "Problem with hashing password");
                 }
+                
                 request.setAttribute("errors", errors);
                 break;
             }
@@ -156,7 +156,7 @@ public class Public extends HttpServlet {
                     } catch (Exception ex) {
                         LOG.log(Level.SEVERE, null, ex);
                         errors.put("hash", "Error with hashing algorithm.");
-                        request.setAttribute("message", errors);
+                        request.setAttribute("errors", errors);
                     }
 
                     password = hash;
@@ -170,7 +170,7 @@ public class Public extends HttpServlet {
                     } catch (NamingException | SQLException ex) {
                         errors.put("general", "There was a problem with a database.");
                         LOG.log(Level.SEVERE, "Problem registering User", ex);
-                        request.setAttribute("message", errors);
+                        request.setAttribute("errors", errors);
                     }
                 } else {
                     request.setAttribute("email", email);
@@ -180,8 +180,8 @@ public class Public extends HttpServlet {
 
                     url = "/registration.jsp";
                 }
+                request.setAttribute("errors", errors);
                 break;
-
             }
             case "gotologin": {
                 url = "/index.jsp";

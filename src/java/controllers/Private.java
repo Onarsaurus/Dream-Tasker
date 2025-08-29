@@ -61,6 +61,7 @@ public class Private extends HttpServlet {
 
         }
 
+        //The action parameter will determine what needs to be executed
         String action = request.getParameter("action");
         String url = "/Private?action=default";
 
@@ -133,6 +134,7 @@ public class Private extends HttpServlet {
                 }
 
                 //Send all event data to calendar to display all events.
+                //Sets all list data for the page
                 request.setAttribute("lists", lists);
                 request.setAttribute("errors", errors);
 
@@ -155,6 +157,7 @@ public class Private extends HttpServlet {
                     errors.put("general", "There was an sql problem in the database");
                 }
 
+                //Sets all list data for the page
                 request.setAttribute("lists", lists);
                 request.setAttribute("errors", errors);
                 url = "/lists.jsp";
@@ -227,13 +230,14 @@ public class Private extends HttpServlet {
                     errors.put("general", "There was an sql problem in the database");
                 }
 
+                //Sets all list data for the page
                 request.setAttribute("lists", lists);
                 request.setAttribute("errors", errors);
                 break;
             }
             case "editlist": {
                 LinkedHashMap<String, String> errors = new LinkedHashMap();
-                //THIS IS THE CURRENT GOAL. MAKE IT SEAMLESS TO EDIT LIST AND MARK AS COMPLETE OR NOT AND DELETE ITEMS AND LIST. SHOULD BE EASY TO DO.
+                //THIS IS THE CURRENT GOAL. RE USE LISTCREATE.JSP (THIS ISNT MVC with VIEWS THO...) OR CREATE A NEW EDIT LIST JSP THAT IS AUTO FILLED WITH INFO. 
                 url = "/lists.jsp";
                 break;
             }
@@ -241,7 +245,7 @@ public class Private extends HttpServlet {
 
             }
             case "edititem": {
-
+                //IN TANDEM WITH EDIT LIST CASE MAYBE? CURRRENT GOAL TOO?
             }
             case "completeitem": {
                 LinkedHashMap<String, String> errors = new LinkedHashMap();
@@ -287,6 +291,7 @@ public class Private extends HttpServlet {
                     errors.put("general", "There was an sql problem in the database");
                 }
 
+                //Sets all list data for the page
                 request.setAttribute("lists", lists);
                 request.setAttribute("errors", errors);
                 url = "/lists.jsp";
@@ -308,7 +313,7 @@ public class Private extends HttpServlet {
                         errors.put("email", "This email is already taken.");
                         url = "/profile.jsp";
                     } else {
-                        storedUser.setEmail(email);
+                        //storedUser.setEmail(email);
                     }
                 } catch (NamingException | SQLException ex) {
                     errors.put("general", "There was a problem with the database");
@@ -323,18 +328,19 @@ public class Private extends HttpServlet {
                     request.setAttribute("errors", errors);
                     url = "/profile.jsp";
                 } else {
-                    storedUser.setUsername(username);
+                    //storedUser.setUsername(username);
                 }
 
                 //checks password
                 String password = request.getParameter("password");
+                String hash = "";
                 if (!password.isEmpty()) {
                     if (!Validation.isPasswordValid(password).equals("")) {
                         errors.put("password", Validation.isPasswordValid(password));
                         request.setAttribute("errors", errors);
                         url = "/profile.jsp";
                     } else {
-                        String hash = "";
+                        hash = "";
                         SecretKeyCredentialHandler ch = null;
                         try {
                             ch = new SecretKeyCredentialHandler();
@@ -345,7 +351,7 @@ public class Private extends HttpServlet {
 
                             hash = ch.mutate(password);
 
-                            storedUser.setPassword(hash);
+                            //storedUser.setPassword(hash);
                         } catch (Exception ex) {
                             request.setAttribute("message", "invalid credentials");
                             url = "/profile.jsp";
@@ -369,11 +375,17 @@ public class Private extends HttpServlet {
                         errors.put("birthdate", Validation.isBirthdateValid(birthday));
                         request.setAttribute("errors", errors);
                         url = "/profile.jsp";
+                    } else {
+                        //storedUser.setBirthday(birthday);
                     }
                 }
 
-                //attemps to update user
+                //attemps to update user if no errors were encountered, and redirect the user to the login page if successful
                 if (errors.isEmpty()) {
+                    storedUser.setEmail(email);
+                    storedUser.setUsername(username);
+                    storedUser.setPassword(hash);
+                    storedUser.setBirthday(birthday);
                     try {
                         DreamTaskerDB.updateUser(storedUser);
                         url = "/index.jsp";
