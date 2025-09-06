@@ -4,12 +4,14 @@
  */
 "use strict";
 
+const $ = selector => document.querySelector(selector);
+
 document.addEventListener('DOMContentLoaded', function () {
-    var calendarEl = document.getElementById('calendar');
+    var calendarEl = $("#calendar");
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         selectable: true,
-        
+
         //selectHelper: true,
         select: function (info) {
             alert('selected ' + info.startStr + ' to ' + info.endStr);
@@ -24,9 +26,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     //Opens the model to create an event
     function openEventModal(info) {
-        document.getElementById('event-start').value = info.startStr;
+        $('#event-start').value = info.startStr;
         document.getElementById('event-end').value = info.endStr || info.startStr;
-        new bootstrap.Modal(document.getElementById('eventModal')).show();
+        var modal = document.getElementById('eventModal');
+        modal.style.display = "block";
+        const closeModal = $(".closeModal");
+        closeModal.addEventListener("click", () => {
+            modal.style.display = "none";
+        });
+        //new bootstrap.Modal(document.getElementById('eventModal')).show();
     }
 
     //Gets the data entered in the model and sends to servlet
@@ -37,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const end = document.getElementById('event-end').value;
         const allDay = document.getElementById('event-all-day').checked;
         const recurring = document.getElementById('event-recurring').checked;
-        
+
         //call to servlet
         fetch("Private?action=saveevent", {
             method: "POST",
@@ -69,9 +77,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 recurring: recurring
             }
         });
-        bootstrap.Modal.getInstance(document.getElementById('eventModal')).hide();
+        //bootstrap.Modal.getInstance(document.getElementById('eventModal')).hide();
         this.reset();
     });
 
     calendar.render();
+
 });

@@ -16,28 +16,31 @@
         <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js'></script>
         <script type="text/javascript" src="jquery-3.3.1.js"></script>
         <!-- Bootstrap js -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"> </script> -->
         <script src="Scripts/dreamTaskerCalendar.js"></script>
         <link href="CSS/dreamTaskerStyles.css" rel="stylesheet">
     </head>
     <body>
         
         <!-- Header/Nav -->
-        <nav>
-            <img src="Images/Dream Tasker Logo.png" alt="logo" width="200" height="200"/>
-            <div>
-                <span>Dream Tasker</span>
-                <div>
-                    <ul>
-                        <li><a href="Private?action=gotohome">Home</a></li>
-                        <li><a href="Private?action=gotolists">Lists</a></li>
-                        <li><a href="#">Budgeting</a></li>
-                        <li><a href="Private?action=gotoprofile">Profile</a></li>
-                        <li><a href="Public?action=gotologin">Logout</a></li>
-                    </ul>
-                </div>
+        <header id="header">
+            <div id="brand">
+                <img src="Images/Dream Tasker Logo.png" alt="logo" width="50" height="50"/>
+                <h1>Dream Tasker</h1> 
             </div>
-        </nav>
+
+            <!-- Nav Bar -->
+            <nav>
+                <ul>
+                    <li><a href="Private?action=gotohome">Home</a></li>
+                    <li><a href="Private?action=gotolists">Lists</a></li>
+                    <li><a href="#">Notes</a></li>
+                    <li><a href="#">Budgeting</a></li>
+                    <li><a href="Private?action=gotoprofile">Profile</a></li>
+                    <li><a href="Public?action=gotologin">Logout</a></li>
+                </ul>
+            </nav>
+        </header>
 
         <!-- Main Content -->
         <main>
@@ -64,7 +67,7 @@
                     </table>
                 </div>
             </div>
-            <span>${errors("general")}</span>
+            <span>${errors.get("general") == null ? "" : errors.get("general")}</span>
 
             <!-- Calendar -->
             <div id="calendar"></div>
@@ -75,13 +78,15 @@
                     <form id="eventForm">
                         <div>
                             <div>
-                                <h5 id="eventModalLabel">Add Event</h5>
-                                <button type="button" data-bs-dismiss="modal"></button>
+                                <h3 id="eventModalLabel">Add Event</h3>
                             </div>
-                            <div>
-                                <input type="hidden" id="event-start">
-                                <input type="hidden" id="event-end">
-
+                            <div>                              
+                                <div>
+                                    <label for="event-start">Event Start</label>
+                                    <input id="event-start">
+                                    <input id="event-end">
+                                </div>
+                                
                                 <div>
                                     <label for="event-name">Event Name</label>
                                     <input type="text" id="event-name">
@@ -99,12 +104,15 @@
                             </div>
                             <div>
                                 <button type="submit">Save Event</button>
-                                <button type="button" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="closeModal" data-bs-dismiss="modal">Cancel</button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
         </main>
+            
+        <!-- Footer -->
+        <footer> </footer>
     </body>
 </html>

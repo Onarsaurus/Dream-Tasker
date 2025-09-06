@@ -99,6 +99,28 @@ public class DreamTaskerDB {
         return rows;
     }
 
+    //Delete a user from the database
+//    public static int deleteUser(User user) throws NamingException, SQLException {
+//        ConnectionPool pool = ConnectionPool.getInstance();
+//        Connection connection = pool.getConnection();
+//        PreparedStatement ps = null;
+//
+//        String query = "UPDATE users "
+//                + "SET email = ?, username = ?, password = ?"
+//                + "WHERE username = ?";
+//
+//        ps = connection.prepareStatement(query);
+//        ps.setString(1, user.getEmail());
+//        ps.setString(2, user.getUsername());
+//        ps.setString(3, user.getPassword());
+//        ps.setString(4, user.getUsername());
+//
+//        int rows = ps.executeUpdate();
+//        ps.close();
+//        pool.freeConnection(connection);
+//
+//        return rows;
+//    }
     //Inserts a list into the database
     public static int insertList(ToDoList list, User user) throws NamingException, SQLException {
         ConnectionPool pool = ConnectionPool.getInstance();
@@ -151,14 +173,15 @@ public class DreamTaskerDB {
         ResultSet rs = null;
         ResultSet rs2 = null;
         int user_id = 1;
+        ArrayList<ToDoItem> items = null;
 
         //this query gets the user_id from the database
-        String query1
+        String query
                 = "SELECT user_id FROM users "
                 + "WHERE username = ?";
 
         //the query is executed and the user_id is stored in a variable
-        ps = connection.prepareStatement(query1);
+        ps = connection.prepareStatement(query);
         ps.setString(1, user.getUsername());
         rs = ps.executeQuery();
 
@@ -173,6 +196,7 @@ public class DreamTaskerDB {
         String query2
                 = "SELECT * FROM to_do_lists "
                 + "WHERE user_id = ? AND name = ?";
+        
         ps2 = connection.prepareStatement(query2);
         ps2.setInt(1, user_id);
         ps2.setString(2, name);
@@ -182,6 +206,8 @@ public class DreamTaskerDB {
             ToDoList list = new ToDoList();
             list.setListID(rs2.getInt("list_id"));
             list.setName(rs2.getString("name"));
+            items = getListsItems(list);
+            list.setItems(items);
             LocalDate completedAt = rs2.getDate("completed_at") == null ? null : rs2.getDate("completed_at").toLocalDate();
             list.setCompletedAt(completedAt);
             ps2.close();
@@ -344,7 +370,7 @@ public class DreamTaskerDB {
         Connection connection = pool.getConnection();
         PreparedStatement ps = null;
 
-        String query 
+        String query
                 = "UPDATE list_items "
                 + "SET name = ?, description = ?, complete = ? "
                 + "WHERE list_id = ? AND name = ?";
@@ -396,6 +422,34 @@ public class DreamTaskerDB {
         return items;
     }
 
+    public static int deleteList(ToDoList list) throws NamingException, SQLException {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        PreparedStatement ps2 = null;
+        int rows = 0;
+        
+        String query = "DELETE FROM list_items " +
+                "WHERE list_id = ? ";
+        
+        ps = connection.prepareStatement(query);
+        ps.setInt(1, list.getListID());
+        rows += ps.executeUpdate();
+        ps.close();
+        
+        String query2 = "DELETE FROM to_do_lists " +
+                "WHERE list_id = ? ";
+        
+        ps2 = connection.prepareStatement(query2);
+        ps2.setInt(1, list.getListID());
+        rows += ps2.executeUpdate();
+        ps2.close();
+        
+        connection.close();
+        
+        return rows;
+    }
+
     public static int insertEvent(Event event, User user) throws NamingException, SQLException {
         ConnectionPool pool = ConnectionPool.getInstance();
         Connection connection = pool.getConnection();
@@ -439,7 +493,6 @@ public class DreamTaskerDB {
         ps2.close();
         pool.freeConnection(connection);
         return rows;
-
     }
 
     public static boolean isValueTaken(String fieldname, String value) throws NamingException, SQLException {

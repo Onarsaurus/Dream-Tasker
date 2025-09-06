@@ -242,20 +242,40 @@ public class Private extends HttpServlet {
                 break;
             }
             case "deletelist": {
+                LinkedHashMap<String, String> errors = new LinkedHashMap();
 
+                //Gets all the parameters
+                String listName = request.getParameter("listName");
+                String option = request.getParameter("option");
+                ToDoList list = null;
+                        
+                try {
+                    list = DreamTaskerDB.getList(storedUser, listName);
+                    int rows = DreamTaskerDB.deleteList(list);
+                } catch (NamingException ex) {
+                    Logger.getLogger(Private.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Private.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                if (option.equals("delete")) {
+                    //DreamTaskerDB.deleteList(storedUser, list)
+                }
+                break;
             }
             case "edititem": {
-                //IN TANDEM WITH EDIT LIST CASE MAYBE? CURRRENT GOAL TOO?
+                //IN TANDEM WITH EDIT LIST CASE MAYBE? OR EVEN completeitem?? CURRRENT GOAL TOO?
+                break;
             }
             case "completeitem": {
                 LinkedHashMap<String, String> errors = new LinkedHashMap();
-                
+
                 //gets the parameters
                 boolean complete = request.getParameter("yesno").equals("yes");
                 String listName = request.getParameter("listName");
                 String itemName = request.getParameter("itemName");
                 String itemDescription = request.getParameter("itemDescription");
-                
+
                 ToDoList list = null;
                 try {
                     //get the list the item belongs to by using list name and stored user:
@@ -265,7 +285,7 @@ public class Private extends HttpServlet {
                         if (complete) {
                             //maybe remove item from the list? (visually/archived)
                         } else {
-                            
+
                         }
                     } catch (NamingException ex) {
                         Logger.getLogger(Private.class.getName()).log(Level.SEVERE, null, ex);
@@ -395,7 +415,7 @@ public class Private extends HttpServlet {
                         url = "/profile.jsp";
                     }
                 }
-                
+
                 request.setAttribute("errors", errors);
                 break;
             }

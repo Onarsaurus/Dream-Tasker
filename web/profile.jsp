@@ -24,6 +24,7 @@
                     <ul>
                         <li><a href="Private?action=gotohome">Home</a></li>
                         <li><a href="Private?action=gotolists">Lists</a></li>
+                        <li><a href="#">Notes</a></li>
                         <li><a href="#">Budgeting</a></li>
                         <li><a href="Private?action=gotoprofile">Profile</a></li>
                         <li><a href="Public?action=gotologin">Logout</a></li>
@@ -63,11 +64,11 @@
 
                     <div>
                         <button type="submit">Save Changes</button>
-                        <span>${errors.get("errors")}</span>
-                        <span>${errors.get("username")}</span>
-                        <span>${errors.get("email")}</span>
-                        <span>${errors.get("birthdate")}</span>
-                        <span>${errors.get("general")}</span>
+                        <span>${errors.get("errors") == null ? "" : errors.get("errors")}</span>
+                        <span>${errors.get("username") == null ? "" : errors.get("username")}</span>
+                        <span>${errors.get("email") == null ? "" : errors.get("email")}</span>
+                        <span>${errors.get("birthdate") == null ? "" : errors.get("birthdate")}</span>
+                        <span>${errors.get("general") == null ? "" : errors.get("general")}</span>
                     </div>
                 </form>
             </div>

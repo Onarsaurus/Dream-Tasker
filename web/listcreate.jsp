@@ -9,13 +9,11 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
-        <!-- bootstrap -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <title>Create a List!</title>
         <!-- CSS -->
         <link href="CSS/dreamTaskerStyles.css" rel="stylesheet">
     </head>
-    <body style="min-height: 100vh;">
+    <body>
 
         <!-- Navbar -->
         <nav>
@@ -25,6 +23,7 @@
                     <ul>
                         <li><a href="Private?action=gotohome">Home</a></li>
                         <li><a href="Private?action=gotolists">Lists</a></li>
+                        <li><a href="#">Notes</a></li>
                         <li><a href="#">Budgeting</a></li>
                         <li><a href="Private?action=gotoprofile">Profile</a></li>
                         <li><a href="Public?action=gotologin">Logout</a></li>
@@ -48,33 +47,29 @@
 
                     <div id="item_container">
                         <div>
-                            <div>
-                                <label>Item Name</label>
-                                <input type="text" name="itemName">
-                            </div>
-                            <div>
-                                <label>Description</label>
-                                <input type="text" name="itemDescription">
-                            </div>
+                            <label>Item Name</label>
+                            <input type="text" name="itemName">
+                            <label>Description</label>
+                            <input type="text" name="itemDescription">
                         </div>
                     </div>
-                    
+
                     <!-- JavaScript to add more list items -->
                     <div>
                         <button id="itemAdd" type="button" >+ Add Another Item</button>
                     </div>
 
                     <div>
-                        <button type="submit">Add</button>
+                        <button type="submit">Create List</button>
                     </div>
 
                     <c:if test="${errors.get('general') != null}">
-                        <div>${errors.get("general")}</div>
+                        <div>${errors.get("general") == null ? "" : errors.get("general")}</div>
                     </c:if>
                 </form>
             </div>
         </main>
-         <!-- java script -->
+        <!-- java script -->
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
         <script src="Scripts/dreamTaskerListCreate.js"></script>
     </body>

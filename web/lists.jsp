@@ -24,6 +24,7 @@
                     <ul>
                         <li><a href="Private?action=gotohome">Home</a></li>
                         <li><a href="Private?action=gotolists">Lists</a></li>
+                        <li><a href="#">Notes</a></li>
                         <li><a href="#">Budgeting</a></li>
                         <li><a href="Private?action=gotoprofile">Profile</a></li>
                         <li><a href="Public?action=gotologin">Logout</a></li>
@@ -43,6 +44,7 @@
                             <th>List Name</th>
                             <th>Items</th>
                             <th>Completed At</th>
+                            <th>Options</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -83,6 +85,14 @@
                                     </table>
                                 </td>
                                 <td>${list.completedAt}</td>
+                                <td>
+                                    <form action="Private" method="post" name="options">
+                                        <input type="hidden" name="action" value="deletelist">
+                                        <input type="hidden" name="listName" value="${list.name}">                                        
+                                        <button name="option" value="delete">Delete</button>
+                                        <button>Archive</button>
+                                    </form>
+                                </td>
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -100,6 +110,7 @@
                 </c:if>
             </div>
         </main>
+        <!-- java script -->
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
         <script src="Scripts/dreamTaskerLists.js"></script>
     </body>
