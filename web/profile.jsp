@@ -16,22 +16,25 @@
     </head>
     <body>
 
-        <!-- Navbar -->
-        <nav>
-            <div>
-                <span>Dream Tasker</span>
-                <div>
-                    <ul>
-                        <li><a href="Private?action=gotohome">Home</a></li>
-                        <li><a href="Private?action=gotolists">Lists</a></li>
-                        <li><a href="#">Notes</a></li>
-                        <li><a href="#">Budgeting</a></li>
-                        <li><a href="Private?action=gotoprofile">Profile</a></li>
-                        <li><a href="Public?action=gotologin">Logout</a></li>
-                    </ul>
-                </div>
+        <!-- Header/Nav -->
+        <header id="header">
+            <div id="brand">
+                <img src="Images/Dream Tasker Logo.png" alt="logo" width="50" height="50"/>
+                <h1>Dream Tasker</h1> 
             </div>
-        </nav>
+
+            <!-- Nav Bar -->
+            <nav>
+                <ul>
+                    <li><a href="Private?action=gotohome">Home</a></li>
+                    <li><a href="Private?action=gotolists">Lists</a></li>
+                    <li><a href="#">Notes</a></li>
+                    <li><a href="#">Budgeting</a></li>
+                    <li><a href="Private?action=gotoprofile">Profile</a></li>
+                    <li><a href="Public?action=gotologin">Logout</a></li>
+                </ul>
+            </nav>
+        </header>
 
         <!-- Main Content -->
         <main>

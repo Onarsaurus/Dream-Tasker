@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
  */
 public class Event implements Serializable {
 
+    private int id;
     private String name, description;
     private LocalDate startDay, endDay;
     private LocalDateTime startTime, endTime;
@@ -32,19 +33,25 @@ public class Event implements Serializable {
         this.allDay = allDay;
         this.recurring = recurring;
     }
-
-    public Event(String name, LocalDate startDay, LocalDate endDay, boolean allDay, boolean recurring) {
+    
+    public Event(int id, String name, String description, LocalDate startDay, LocalDate endDay, LocalDateTime startTime, LocalDateTime endTime, boolean allDay, boolean recurring) {
+        this.id = id;
         this.name = name;
+        this.description = description;
         this.startDay = startDay;
         this.endDay = endDay;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.allDay = allDay;
         this.recurring = recurring;
     }
 
-    public Event(String name, LocalDate startDay, LocalDate endDay) {
-        this.name = name;
-        this.startDay = startDay;
-        this.endDay = endDay;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -107,7 +114,7 @@ public class Event implements Serializable {
         return recurring;
     }
 
-    public void setReccuring(boolean recurring) {
+    public void setRecurring(boolean recurring) {
         this.recurring = recurring;
     }
 

@@ -196,7 +196,7 @@ public class DreamTaskerDB {
         String query2
                 = "SELECT * FROM to_do_lists "
                 + "WHERE user_id = ? AND name = ?";
-        
+
         ps2 = connection.prepareStatement(query2);
         ps2.setInt(1, user_id);
         ps2.setString(2, name);
@@ -246,7 +246,6 @@ public class DreamTaskerDB {
 //        return rows;
 //
 //    }
-    
     //Returns all of the users lists
     public static ArrayList<ToDoList> getUsersCompleteLists(User user) throws NamingException, SQLException {
         ConnectionPool pool = ConnectionPool.getInstance();
@@ -428,25 +427,25 @@ public class DreamTaskerDB {
         PreparedStatement ps = null;
         PreparedStatement ps2 = null;
         int rows = 0;
-        
-        String query = "DELETE FROM list_items " +
-                "WHERE list_id = ? ";
-        
+
+        String query = "DELETE FROM list_items "
+                + "WHERE list_id = ? ";
+
         ps = connection.prepareStatement(query);
         ps.setInt(1, list.getListID());
         rows += ps.executeUpdate();
         ps.close();
-        
-        String query2 = "DELETE FROM to_do_lists " +
-                "WHERE list_id = ? ";
-        
+
+        String query2 = "DELETE FROM to_do_lists "
+                + "WHERE list_id = ? ";
+
         ps2 = connection.prepareStatement(query2);
         ps2.setInt(1, list.getListID());
         rows += ps2.executeUpdate();
         ps2.close();
-        
+
         connection.close();
-        
+
         return rows;
     }
 
@@ -456,6 +455,7 @@ public class DreamTaskerDB {
         PreparedStatement ps = null;
         PreparedStatement ps2 = null;
         ResultSet rs = null;
+        ResultSet rs2 = null;
         int user_id = 1;
 
         //this query gets the user_id from the database
@@ -479,7 +479,7 @@ public class DreamTaskerDB {
                 = "INSERT INTO events (user_id, name, description, start_day, end_day, start_time, end_time, all_day, recurring) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        ps2 = connection.prepareStatement(query2);
+        ps2 = connection.prepareStatement(query2, PreparedStatement.RETURN_GENERATED_KEYS);
         ps2.setInt(1, user_id);
         ps2.setString(2, event.getName());
         ps2.setString(3, event.getDescription() != null ? event.getDescription() : null);
@@ -490,9 +490,70 @@ public class DreamTaskerDB {
         ps2.setBoolean(8, event.isAllDay());
         ps2.setBoolean(9, event.isRecurring());
         int rows = ps2.executeUpdate();
+
+        rs2 = ps2.getGeneratedKeys();
+        int eventId = -1;
+        while (rs2.next()) {
+            eventId = rs2.getInt(1);
+        }
+
+        rs2.close();
         ps2.close();
         pool.freeConnection(connection);
-        return rows;
+        return eventId;
+    }
+
+    //Gets the events from a user
+    public static ArrayList<Event> getEvents(User user) throws NamingException, SQLException {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        PreparedStatement ps2 = null;
+        ResultSet rs2 = null;
+        int user_id = 1;
+
+        //this query gets the user_id from the database
+        String query
+                = "SELECT user_id FROM users "
+                + "WHERE username = ?";
+
+        //the query is executed and the user_id is stored in a variable
+        ps = connection.prepareStatement(query);
+        ps.setString(1, user.getUsername());
+        rs = ps.executeQuery();
+
+        while (rs.next()) {
+            user_id = rs.getInt("user_id");
+        }
+
+        ps.close();
+        rs.close();
+
+        String query2 = "SELECT * FROM events "
+                + "WHERE user_id = ?";
+
+        ps2 = connection.prepareStatement(query2);
+        ps2.setInt(1, user_id);
+        rs2 = ps2.executeQuery();
+
+        ArrayList<Event> events = new ArrayList<>();
+        while (rs2.next()) {
+            Event event = new Event();
+            event.setId(rs2.getInt("event_id"));
+            event.setName(rs2.getString("name"));
+            event.setStartDay(rs2.getDate("start_day").toLocalDate());
+            event.setEndDay(rs2.getDate("end_day").toLocalDate());
+            event.setAllDay(rs2.getBoolean("all_day"));
+            event.setRecurring(rs2.getBoolean("recurring"));
+            events.add(event);
+        }
+
+        ps2.close();
+        rs2.close();
+        pool.freeConnection(connection);
+        
+        return events;
     }
 
     public static boolean isValueTaken(String fieldname, String value) throws NamingException, SQLException {

@@ -14,9 +14,6 @@
         <title>Home</title>
         <!-- FullCalendar.js -->
         <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js'></script>
-        <script type="text/javascript" src="jquery-3.3.1.js"></script>
-        <!-- Bootstrap js -->
-        <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"> </script> -->
         <script src="Scripts/dreamTaskerCalendar.js"></script>
         <link href="CSS/dreamTaskerStyles.css" rel="stylesheet">
     </head>
@@ -73,7 +70,7 @@
             <div id="calendar"></div>
 
             <!-- Add Event Modal -->
-            <div id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+            <div id="eventModal" tabindex="-1" >
                 <div>
                     <form id="eventForm">
                         <div>
@@ -103,8 +100,8 @@
                                 </div>
                             </div>
                             <div>
-                                <button type="submit">Save Event</button>
-                                <button type="button" class="closeModal" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="saveButton">Save Event</button>
+                                <button type="button" class="closeModal">Cancel</button>
                             </div>
                         </div>
                     </form>

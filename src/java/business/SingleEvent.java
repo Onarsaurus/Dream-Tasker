@@ -20,12 +20,12 @@ public class SingleEvent extends Event {
         super(name, description, startDay, endDay, startTime, endTime, allDay, recurring);
     }
 
-    public SingleEvent(String name, LocalDate startDay, LocalDate endDay, boolean allDay, boolean recurring) {
-        super(name, startDay, endDay, allDay, recurring);
-    }
-
-    public SingleEvent(String name, LocalDate startDay, LocalDate endDay) {
-        super(name, startDay, endDay);
-    }
+//    public SingleEvent(String name, LocalDate startDay, LocalDate endDay, boolean allDay, boolean recurring) {
+//        super(name, startDay, endDay, allDay, recurring);
+//    }
+//
+//    public SingleEvent(String name, LocalDate startDay, LocalDate endDay) {
+//        super(name, startDay, endDay);
+//    }
 
 }

@@ -22,12 +22,12 @@ public class ReoccuringEvent extends Event {
         super(name, description, startDay, endDay, startTime, endTime, allDay, recurring);
     }
 
-    public ReoccuringEvent(String name, LocalDate startDay, LocalDate endDay, boolean allDay, boolean recurring) {
-        super(name, startDay, endDay, allDay, recurring);
-    }
-
-    public ReoccuringEvent(String name, LocalDate startDay, LocalDate endDay) {
-        super(name, startDay, endDay);
-    }
+//    public ReoccuringEvent(String name, LocalDate startDay, LocalDate endDay, boolean allDay, boolean recurring) {
+//        super(name, startDay, endDay, allDay, recurring);
+//    }
+//
+//    public ReoccuringEvent(String name, LocalDate startDay, LocalDate endDay) {
+//        super(name, startDay, endDay);
+//    }
 
 }

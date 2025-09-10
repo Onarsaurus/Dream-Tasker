@@ -67,17 +67,49 @@ public class Private extends HttpServlet {
 
         //CHANGE EER DIAGRAM FOR EVENTS TO HAVE start_day and end_day, and allday reccuring!
         switch (action) {
+            case "getevents": {
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+
+                try {
+                    // Fetch all events for this user
+                    ArrayList<Event> events = DreamTaskerDB.getEvents(storedUser);
+
+                    // Transform to FUllCalendar foprmatwaeqt
+                    JsonArray array = new JsonArray();
+                    for (Event e: events ) {
+                        JsonObject event = new JsonObject();
+                        event.addProperty("id", e.getId());
+                        event.addProperty("title", e.getName());
+                        event.addProperty("start", e.getStartDay().toString());
+                        event.addProperty("end", e.getEndDay().toString());
+                        event.addProperty("allDay", e.isAllDay());
+                        array.add(event);
+                    }
+
+                    response.getWriter().write(array.toString());
+
+                    return; // VERY IMPORTANT: stop here, don’t forward to JSP
+                } catch (NamingException | SQLException ex) {
+                    Logger.getLogger(Private.class.getName()).log(Level.SEVERE, null, ex);
+                    response.getWriter().write("[]"); // fallback empty array
+                    return;
+                }
+            }
             case "saveevent": {
                 //saves an event when user adds one on the calendar
                 Gson gson = new Gson();
                 JsonObject data = gson.fromJson(request.getReader(), JsonObject.class);
+                
+                int id = 1;
+                String name = data.get("name").getAsString();
                 LocalDate eventStart = null;
                 LocalDate eventEnd = null;
                 LocalDateTime eventStartTime = null;
                 LocalDateTime eventEndTime = null;
-
-                String name = data.get("name").getAsString();
                 String description = null;
+                
+                
                 //Figure out how to make these LocalDates/LocalDateTimes. LocalDate rn is fine as I only get back a date in yyyy-mm-dd format
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 try {
@@ -99,14 +131,30 @@ public class Private extends HttpServlet {
 
                 //add event to database
                 try {
-                    DreamTaskerDB.insertEvent(event, storedUser);
+                    id = DreamTaskerDB.insertEvent(event, storedUser);
+                    
+                    JsonObject result = new JsonObject();
+                    result.addProperty("id", id);
+                    result.addProperty("title", name);
+                    result.addProperty("start", eventStart.toString());
+                    result.addProperty("end", eventEnd.toString());
+                    result.addProperty("allDay", allDay);
+                    
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write(result.toString());
+                    return;
+                    
                 } catch (NamingException ex) {
                     Logger.getLogger(Private.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (SQLException ex) {
                     Logger.getLogger(Private.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) {
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    return;
                 }
 
-                System.out.println(name + eventStart + eventEnd + allDay + recurring);
+                System.out.println(id + name + eventStart + eventEnd + allDay + recurring);
                 break;
             }
             case "deleteevent": {
@@ -248,7 +296,7 @@ public class Private extends HttpServlet {
                 String listName = request.getParameter("listName");
                 String option = request.getParameter("option");
                 ToDoList list = null;
-                        
+
                 try {
                     list = DreamTaskerDB.getList(storedUser, listName);
                     int rows = DreamTaskerDB.deleteList(list);
